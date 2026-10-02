@@ -1,5 +1,5 @@
 <?php 
-include "conexao.php";
+include "conexao.php"; //inclui a conexão com o banco
 
 if($_SERVER['REQUEST_METHOD'] == 'POST'){
     $id = $_POST['id_produto'];
