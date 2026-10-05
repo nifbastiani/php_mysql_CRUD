@@ -1,30 +1,37 @@
 <?php 
 include "conexao.php"; //inclui a conexão com o banco
 
-if($_SERVER['REQUEST_METHOD'] == 'POST'){
-    $id = $_POST['id_produto'];
-    $descricao = $_POST['descricao'];
+if($_SERVER['REQUEST_METHOD'] == 'POST'){ //$_SERVER é um array criado pelo php que contém informações da requisição, se é POST ou GET
+    //se a requisição for POST, executa o if. Senão, ignora.
+    //ex: quando o usuário clicar em salvar e o formulário tem o método POST,  função é executada
 
+    $id = $_POST['id_produto']; //recebe o id do produto
+    $descricao = $_POST['descricao']; //recebe a descricao do produto
+
+    //string com as instruções sql
     $sql = "UPDATE produto
             SET descricao = '$descricao'
             WHERE id_produto = $id";
 
-    mysqli_query($conn, $sql); 
+    mysqli_query($conn, $sql); //envia o update para o mysql
 
-    header("Location: index.php"); 
+    header("Location: index.php"); //retorna para a página com a tabela depois de fazer o update
     exit;
 }
+//quando o usuário clica para editar o produto, ele envia um GET para carregar os dados desse produto
+$id = $_GET['id']; //pega o id da url
 
-$id = $_GET['id'];
-
+//string com as instruções sql
 $sql = "SELECT * FROM produto
         WHERE id_produto = $id";
 
-$result = mysqli_query($conn, $sql);
+$result = mysqli_query($conn, $sql); //faz a busca no banco, e retorna o objeto
 
-$produto = mysqli_fetch_assoc($result);
+$produto = mysqli_fetch_assoc($result); //pega a linha do produto e transforma em um array associativo
+                                        //para aí então o usuário preencher o fromulário com os novos dados
 
 ?>
+<!-- página de edição quando o usuário aperta em editar -->
 
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -37,7 +44,9 @@ $produto = mysqli_fetch_assoc($result);
 <body>
     <div class="container mt-5">
         <form action="update.php" method="POST" style="max-width: 500px; display: flex; gap: 20px;">
-            <input type="hidden"
+            <!-- O id do produto está escondido ao usuário, pois ele não precisa ver
+             mas é necessário o id do produto para fazer o POST e o UPDATE no banco -->
+            <input type="hidden" 
                 name="id_produto"
                 value="<?=  $produto['id_produto'] ?>">
             <label>Descrição</label>
